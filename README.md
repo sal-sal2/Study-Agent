@@ -1,2 +1,0 @@
-# Note-Agent
-AI Agent

@@ -1,17 +1,12 @@
 """
-Docstring for agent. This file includes the code for our api
-I plan to change the ai model to Google AI Studio (Gemini): Completely free for testing with Gemini models (like 2.5 Flash) 
 """
 from langchain import ChatOpenAI
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 from dotenv import load_dotenv
 
-#load_dotenv()
+load_dotenv()
 
-
-###functions for agent will call
-#read 
 @tool
 def read_note(filepath):
     """Read the contents of the file"""
@@ -40,8 +35,8 @@ def write_note(filepath, content):
 TOOLS = [read_note, write_note]
 
 #first prompt agent will look at
-SYSTEM_MESSAGE = """You are a helpful note-taking assistant.
-You can read and write text files to help users manage their notes.
+SYSTEM_MESSAGE = """You are a helpful study-tutor assistant.
+You can read and write text files to help users understand STEM concepts.
 Be concise and helpful."""
 
 

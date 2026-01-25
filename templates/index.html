@@ -1,85 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Note Agent</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-        }
-        
-        textarea {
-            width: 100%;
-            height: 100px;
-            padding: 10px;
-            margin: 10px 0;
-        }
-        
-        button {
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        
-        #response {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            display: none;
-            white-space: pre-wrap;
-        }
-        
-        .error {
-            border-color: red;
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Tutor</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Subtle animated gradient glow */
+    .bg-glow {
+      background: linear-gradient(120deg, #ff80b5, #9089fc);
+      animation: glow 8s ease infinite;
+    }
+
+    @keyframes glow {
+      0% { transform: translateX(0%) }
+      50% { transform: translateX(10%) }
+      100% { transform: translateX(0%) }
+    }
+  </style>
 </head>
-<body>
-    <h1>Note Agent</h1>
-    
-    <form id="agentForm">
-        <textarea id="prompt" placeholder="Enter your prompt..." required></textarea>
-        <button type="submit">Send</button>
+
+<body class="relative isolate bg-gray-900 min-h-screen flex items-center justify-center px-6">
+
+  <div aria-hidden="true" class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl">
+    <div class="bg-glow mx-auto aspect-[1155/678] w-[72rem] opacity-20 rounded-full"></div>
+  </div>
+
+  <div class="w-full max-w-2xl rounded-3xl bg-white/5 p-8 ring-1 ring-white/10 backdrop-blur-md">
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-semibold tracking-tight text-white">
+        Study Tutor
+      </h1>
+      <p class="mt-2 text-gray-400">
+        Ask questions, get explanations, learn faster.
+      </p>
+    </div>
+
+    <form id="agentForm" class="space-y-4">
+      <div>
+        <label for="prompt" class="block text-sm font-medium text-gray-300">
+          Your question
+        </label>
+
+        <div class="mt-2 rounded-xl bg-gray-800 ring-1 ring-white/10 focus-within:ring-indigo-500">
+          <textarea
+            id="prompt"
+            required
+            placeholder="Explain photosynthesis in simple terms..."
+            class="block w-full resize-none bg-transparent p-4 text-white placeholder-gray-500 focus:outline-none"
+            rows="4"
+          ></textarea>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="w-full rounded-xl bg-indigo-500 py-3 text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition"
+      >
+        Ask Tutor
+      </button>
     </form>
-    
-    <div id="response"></div>
-    
-    <script>
-        const form = document.getElementById('agentForm');
-        const promptInput = document.getElementById('prompt');
-        const responseDiv = document.getElementById('response');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            responseDiv.style.display = 'block';
-            responseDiv.className = '';
-            responseDiv.textContent = 'Loading...';
-            
-            try {
-                const response = await fetch('/agent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: promptInput.value })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    responseDiv.textContent = data.response;
-                } else {
-                    responseDiv.className = 'error';
-                    responseDiv.textContent = 'Error: ' + (data.detail || 'Unknown error');
-                }
-            } catch (error) {
-                responseDiv.className = 'error';
-                responseDiv.textContent = 'Error: ' + error.message;
-            }
+
+    <div
+      id="response"
+      class="mt-6 hidden rounded-xl bg-gray-800 p-4 text-gray-200 ring-1 ring-white/10 whitespace-pre-wrap"
+    ></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('agentForm');
+    const promptInput = document.getElementById('prompt');
+    const responseDiv = document.getElementById('response');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      responseDiv.classList.remove('hidden');
+      responseDiv.classList.remove('text-red-400');
+      responseDiv.textContent = 'Thinking…';
+
+      try {
+        const response = await fetch('/agent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptInput.value })
         });
-    </script>
+
+        const data = await response.json();
+
+        if (response.ok) {
+          responseDiv.textContent = data.response;
+        } else {
+          responseDiv.classList.add('text-red-400');
+          responseDiv.textContent = data.detail || 'Something went wrong.';
+        }
+      } catch (err) {
+        responseDiv.classList.add('text-red-400');
+        responseDiv.textContent = err.message;
+      }
+    });
+  </script>
 </body>
 </html>
