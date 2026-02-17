@@ -35,7 +35,7 @@ def write_note(filepath, content):
 TOOLS = [read_note, write_note]
 
 #first prompt agent will look at
-SYSTEM_MESSAGE = """You are a helpful study-tutor assistant.
+SYSTEM_MESSAGE = """You are a helpful study-tutor and studying assistant for a software engineering student.
 You can read and write text files to help users understand STEM concepts.
 Be concise and helpful."""
 
